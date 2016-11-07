@@ -1,0 +1,43 @@
+ROOT = `pwd`.chomp
+project_root = "#{ROOT}/NativeiOS/Library/"
+project = "#{ROOT}/NativeiOS/Library/Library.xcodeproj"
+configure = 'Debug'
+
+UNITY = "/Applications/Unity/Unity.app/Contents/MacOS/Unity"
+UNITY_PRJ_DIR = "#{ROOT}/unity_project"
+UNITY_BUILD_METHOD_AND = 'BuildScript.Build'
+
+framework_src_fpath = "#{project_root}/build/Debug-iphoneos/Library.framework"
+framework_dst_fpath = "#{UNITY_PRJ_DIR}/Assets/Plugins/iOS/Library.framework"
+
+
+# build_opt = "BUILD_DIR=#{ROOT}"
+build_opt = ''
+
+
+task :default do
+
+  sh "xcodebuild -project #{project} -list"
+  sh "xcodebuild -project #{project} -configuration #{configure} clean #{build_opt}"
+  sh "xcodebuild -project #{project} -configuration #{configure} build #{build_opt}"
+
+  rm_rf framework_dst_fpath if File.exist?(framework_dst_fpath)
+  mkdir_p File.dirname(framework_dst_fpath)
+  cp_r framework_src_fpath, framework_dst_fpath
+
+
+  build_cmd = [
+    UNITY,
+    "-quit -batchmode",
+    #  "-nographics",
+    "-buildTarget ios",
+    "-projectPath #{UNITY_PRJ_DIR}",
+    "-executeMethod #{UNITY_BUILD_METHOD_AND}"
+  ].join(' ')
+
+  sh build_cmd do |ok, res|
+    if not ok
+      abort 'operation failed'
+    end
+  end
+end
