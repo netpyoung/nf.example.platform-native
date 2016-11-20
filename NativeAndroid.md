@@ -4,6 +4,9 @@ https://github.com/wikibook/ugui
 AsyncTask
 http://itmir.tistory.com/624
 
+http://zwyuan.github.io/2015/12/22/three-ways-to-use-android-ndk-cross-compiler/
+
+
 jar : Java ARchive
 aar : Android ARchive
 JNI : Java Native Interface
